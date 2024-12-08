@@ -1,14 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import { useDispatch } from 'react-redux';
-import { setLocation } from '../Redux/features/Globalslice';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLocation} from '../Redux/features/Globalslice';
 
 const Home = () => {
   const [loginAttempts, setLoginAttempts] = useState([]);
-const disptach = useDispatch()
+
+  const disptach = useDispatch();
+  const location = useSelector(state => state.global.location);
+  console.log('🚀 ~ Home ~ location:', location);
+
   useEffect(() => {
-    // Get location as soon as the component mounts
     getLocation();
   }, []);
 
@@ -16,33 +19,35 @@ const disptach = useDispatch()
     Geolocation.getCurrentPosition(
       position => {
         const {latitude, longitude} = position.coords;
-        const dateTime = new Date().toLocaleString(); // Current date & time
+        const dateTime = new Date().toLocaleString();
         const location = `Lat: ${latitude}, Long: ${longitude}`;
 
-        // Add new login attempt to the list
         setLoginAttempts(prevAttempts => [
           ...prevAttempts,
           {dateTime, location},
         ]);
-    
-        disptach(setLocation(location,dateTime))
+
+        disptach(setLocation(location, dateTime));
       },
       error => console.log('Error getting location:', error),
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   };
 
-  const renderItem = ({item}) => (
-    <View style={styles.listItem}>
-      <Text style={styles.itemText}>Login at: {item.dateTime}</Text>
-      <Text style={styles.itemText}>Location: {item.location}</Text>
-    </View>
-  );
+  const renderItem = ({item}) => {
+    console.log('🚀 ~ renderItem ~ item:', item);
+    return (
+      <View style={styles.listItem}>
+        <Text style={styles.itemText}>Login at: {item.dateTime}</Text>
+        <Text style={styles.itemText}>Location: {item}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={loginAttempts}
+        data={location}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
         style={styles.list}

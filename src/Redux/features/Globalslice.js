@@ -24,6 +24,7 @@ const initialState = {
     },
   ],
   loggedIn: {},
+  location: [],
 };
 
 export const GlobalSlice = createSlice({
@@ -38,22 +39,22 @@ export const GlobalSlice = createSlice({
       );
       state.loggedIn = user[0];
     },
-    setLocation:(state,action) =>{
-      state.loggedIn = {...state.loggedIn,location:action.payload}
-     
+    setLocation: (state, action) => {
+      state.location.push(action.payload);
     },
-    clear:(state,action)=>{
-      state.loggedIn={}
+    clear: (state, action) => {
+      state.loggedIn = {};
     },
-    clearParticularItem:(state,action)=>{
-      console.log(state.loggedIn,"===")
-      state.loggedIn.name=""
-      state.loggedIn.password=""
-      console.log(state.loggedIn,"==ll=")
-    }
+    clearParticularItem: (state, action) => {
+      console.log(state.loggedIn, '===');
+      state.loggedIn.name = '';
+      state.loggedIn.password = '';
+      console.log(state.loggedIn, '==ll=');
+    },
   },
 });
 
-export const {login,setLocation,clear,clearParticularItem} = GlobalSlice.actions;
+export const {login, setLocation, clear, clearParticularItem} =
+  GlobalSlice.actions;
 
 export default GlobalSlice.reducer;

@@ -7,7 +7,7 @@ import {setLocation} from '../Redux/features/Globalslice';
 const Home = () => {
   const [loginAttempts, setLoginAttempts] = useState([]);
 
-  const disptach = useDispatch();
+  const dispatch = useDispatch();
   const location = useSelector(state => state.global.location);
   console.log('🚀 ~ Home ~ location:', location);
 
@@ -22,12 +22,15 @@ const Home = () => {
         const dateTime = new Date().toLocaleString();
         const location = `Lat: ${latitude}, Long: ${longitude}`;
 
-        setLoginAttempts(prevAttempts => [
-          ...prevAttempts,
-          {dateTime, location},
-        ]);
+        console.log('Latitude:', latitude, 'Longitude:', longitude);
+        console.log('DateTime:', dateTime);
+        console.log('Location:', location);
 
-        disptach(setLocation(location, dateTime));
+        if (latitude && longitude && dateTime) {
+          dispatch(setLocation({location, dateTime}));
+        } else {
+          console.error('Error: Location or DateTime is missing');
+        }
       },
       error => console.log('Error getting location:', error),
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
@@ -39,7 +42,7 @@ const Home = () => {
     return (
       <View style={styles.listItem}>
         <Text style={styles.itemText}>Login at: {item.dateTime}</Text>
-        <Text style={styles.itemText}>Location: {item}</Text>
+        <Text style={styles.itemText}>Location: {item.location}</Text>
       </View>
     );
   };

@@ -40,7 +40,17 @@ export const GlobalSlice = createSlice({
       state.loggedIn = user[0];
     },
     setLocation: (state, action) => {
-      state.location.push(action.payload);
+      // Make sure the payload is an object with both location and dateTime
+      const {location, dateTime} = action.payload;
+
+      if (location && dateTime) {
+        state.location.push({
+          location, // The location string (Lat, Long)
+          dateTime, // The datetime string
+        });
+      } else {
+        console.error('Location or DateTime is missing');
+      }
     },
     clear: (state, action) => {
       state.loggedIn = {};
